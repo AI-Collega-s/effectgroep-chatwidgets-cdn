@@ -261,15 +261,15 @@
             width: 24px;
             height: 24px;
             border-radius: 50%;
-            background: transparent;
+            background: var(--eg-neutral-darker);
             border: none;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             z-index: 25;
-            transition: background-color 0.2s ease, color 0.2s ease;
-            color: rgba(255, 255, 255, 0.4);
+            transition: background-color 0.2s ease;
+            color: #ffffff;
             padding: 0;
             touch-action: manipulation;
             -webkit-tap-highlight-color: transparent;
@@ -277,8 +277,7 @@
             -webkit-user-select: none;
         }
         .dismiss-btn:hover {
-            background-color: rgba(255, 255, 255, 0.08);
-            color: rgba(255, 255, 255, 0.8);
+            background-color: #333;
         }
         .dismiss-btn svg { width: 12px; height: 12px; }
 

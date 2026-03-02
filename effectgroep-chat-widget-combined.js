@@ -293,8 +293,8 @@ html,body{background:transparent;font-family:var(--eg-font-family);overflow:hidd
 .send-btn{position:absolute;right:10px;top:10px;width:52px;height:52px;border-radius:100%;background-color:var(--eg-pink);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:110;transition:transform 0.2s ease,box-shadow 0.2s ease;touch-action:manipulation;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;}
 .send-btn:hover{transform:scale(1.05);box-shadow:0 0 20px ${hexToRgba(colors.sendButtonHoverGlow, colors.sendButtonHoverGlowOpacity)};}
 .send-btn svg{width:20px;height:20px;fill:${colors.arrow};}
-.dismiss-btn{position:absolute;top:4px;right:4px;width:24px;height:24px;border-radius:50%;background:transparent;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:25;transition:background-color 0.2s ease,color 0.2s ease;color:rgba(255,255,255,0.4);padding:0;touch-action:manipulation;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;}
-.dismiss-btn:hover{background-color:rgba(255,255,255,0.08);color:rgba(255,255,255,0.8);}
+.dismiss-btn{position:absolute;top:4px;right:4px;width:24px;height:24px;border-radius:50%;background:var(--eg-neutral-darker);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:25;transition:background-color 0.2s ease;color:#ffffff;padding:0;touch-action:manipulation;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;}
+.dismiss-btn:hover{background-color:#333;}
 .dismiss-btn svg{width:12px;height:12px;}
 @media (max-width:480px){.chat-input{font-size:1rem;}.send-btn{width:44px;height:44px;right:8px;top:14px;}.dismiss-btn{top:6px;right:2px;width:22px;height:22px;}.dismiss-btn svg{width:11px;height:11px;}}
     </style>
