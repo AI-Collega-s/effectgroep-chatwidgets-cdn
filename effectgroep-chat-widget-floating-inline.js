@@ -13,6 +13,7 @@
             baseUrl: WIDGET_CONFIG.baseUrl,
             inboxToken: WIDGET_CONFIG.inboxToken
         },
+        floatingDismissed: false,
 
         init: function(userConfig = {}) {
             if (userConfig.baseUrl) this.config.baseUrl = userConfig.baseUrl;
@@ -91,10 +92,21 @@
                     self.modalIframe.style.display = 'none';
                     document.body.style.overflow = '';
 
+                    if (!self.floatingDismissed) {
+                        setTimeout(function() {
+                            self.floatingContainer.style.opacity = '1';
+                            self.floatingContainer.style.transform = 'translateX(-50%) translateY(0)';
+                        }, 100);
+                    }
+                }
+                if (event.data.type === 'effectgroep-dismiss-floating') {
+                    self.floatingDismissed = true;
+                    self.floatingContainer.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+                    self.floatingContainer.style.opacity = '0';
+                    self.floatingContainer.style.transform = 'translateX(-50%) translateY(20px)';
                     setTimeout(function() {
-                        self.floatingContainer.style.opacity = '1';
-                        self.floatingContainer.style.transform = 'translateX(-50%) translateY(0)';
-                    }, 100);
+                        self.floatingContainer.style.display = 'none';
+                    }, 300);
                 }
             });
         },
@@ -134,6 +146,7 @@
         }
 
         .widget-container {
+            position: relative;
             padding: 30px;
         }
 
@@ -241,6 +254,34 @@
             fill: ${colors.arrow};
         }
 
+        .dismiss-btn {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 25;
+            transition: background-color 0.2s ease, color 0.2s ease;
+            color: rgba(255, 255, 255, 0.4);
+            padding: 0;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        .dismiss-btn:hover {
+            background-color: rgba(255, 255, 255, 0.08);
+            color: rgba(255, 255, 255, 0.8);
+        }
+        .dismiss-btn svg { width: 12px; height: 12px; }
+
         @media (max-width: 480px) {
             .chat-input {
                 font-size: 1rem;
@@ -251,11 +292,18 @@
                 right: 8px;
                 top: 14px;
             }
+            .dismiss-btn { top: 6px; right: 2px; width: 22px; height: 22px; }
+            .dismiss-btn svg { width: 11px; height: 11px; }
         }
     </style>
 </head>
 <body>
     <div class="widget-container">
+        <button class="dismiss-btn" id="dismiss-btn" aria-label="Sluiten">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+                <path fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" d="M4 4l8 8M12 4l-8 8"/>
+            </svg>
+        </button>
         <div class="ai-chat-wrapper">
             <div class="ai-chat">
                 <div class="input-container">
@@ -311,6 +359,11 @@
                     e.preventDefault();
                     sendMessage(input.value);
                 }
+            });
+
+            document.getElementById('dismiss-btn').addEventListener('click', function(e) {
+                e.preventDefault();
+                window.parent.postMessage({ type: 'effectgroep-dismiss-floating' }, '*');
             });
         })();
     <\/script>

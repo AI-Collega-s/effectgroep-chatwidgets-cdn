@@ -13,6 +13,7 @@
         },
         modalIsOpen: false,
         floatingVisible: false,
+        floatingDismissed: false,
         init: function(userConfig = {}) {
             if (userConfig.baseUrl) this.config.baseUrl = userConfig.baseUrl;
             if (userConfig.inboxToken) this.config.inboxToken = userConfig.inboxToken;
@@ -97,7 +98,7 @@
             this.observer.observe(this.inlineContainer);
         },
         showFloatingBar: function() {
-            if (this.floatingVisible || this.modalIsOpen) return;
+            if (this.floatingVisible || this.modalIsOpen || this.floatingDismissed) return;
             this.floatingVisible = true;
             const container = this.floatingContainer;
             container.style.display = '';
@@ -153,6 +154,10 @@
                             self.showFloatingBar();
                         }
                     }, 150);
+                }
+                if (event.data.type === 'effectgroep-dismiss-floating') {
+                    self.floatingDismissed = true;
+                    self.hideFloatingBar();
                 }
             });
         },
@@ -275,7 +280,7 @@ html,body{background:transparent;font-family:var(--eg-font-family);overflow:hidd
 *{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
 :root{--eg-pink:${colors.sendButton};--eg-neutral-darker:#222;--eg-neutral-dark:#444;--eg-white:#ffffff;--eg-text-muted:rgba(255,255,255,0.6);--eg-font-family:'proxima-nova',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;}
 html,body{background:transparent;font-family:var(--eg-font-family);overflow:hidden;}
-.widget-container{padding:30px;}
+.widget-container{position:relative;padding:30px;}
 .ai-chat-wrapper{position:relative;width:100%;}
 .ai-chat{position:relative;width:100%;}
 .ai-chat::before,.ai-chat::after{content:"";position:absolute;top:-1px;left:-1px;width:calc(100% + 2px);height:calc(100% + 2px);background:linear-gradient(45deg,${glowGradient});background-size:400%;z-index:20;animation:glowbox 20s linear infinite;}
@@ -288,11 +293,19 @@ html,body{background:transparent;font-family:var(--eg-font-family);overflow:hidd
 .send-btn{position:absolute;right:10px;top:10px;width:52px;height:52px;border-radius:100%;background-color:var(--eg-pink);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:110;transition:transform 0.2s ease,box-shadow 0.2s ease;touch-action:manipulation;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;}
 .send-btn:hover{transform:scale(1.05);box-shadow:0 0 20px ${hexToRgba(colors.sendButtonHoverGlow, colors.sendButtonHoverGlowOpacity)};}
 .send-btn svg{width:20px;height:20px;fill:${colors.arrow};}
-@media (max-width:480px){.chat-input{font-size:1rem;}.send-btn{width:44px;height:44px;right:8px;top:14px;}}
+.dismiss-btn{position:absolute;top:4px;right:4px;width:24px;height:24px;border-radius:50%;background:transparent;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:25;transition:background-color 0.2s ease,color 0.2s ease;color:rgba(255,255,255,0.4);padding:0;touch-action:manipulation;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;}
+.dismiss-btn:hover{background-color:rgba(255,255,255,0.08);color:rgba(255,255,255,0.8);}
+.dismiss-btn svg{width:12px;height:12px;}
+@media (max-width:480px){.chat-input{font-size:1rem;}.send-btn{width:44px;height:44px;right:8px;top:14px;}.dismiss-btn{top:6px;right:2px;width:22px;height:22px;}.dismiss-btn svg{width:11px;height:11px;}}
     </style>
 </head>
 <body>
     <div class="widget-container">
+        <button class="dismiss-btn" id="dismiss-btn" aria-label="Sluiten">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+                <path fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" d="M4 4l8 8M12 4l-8 8"/>
+            </svg>
+        </button>
         <div class="ai-chat-wrapper">
             <div class="ai-chat">
                 <div class="input-container">
@@ -344,6 +357,10 @@ html,body{background:transparent;font-family:var(--eg-font-family);overflow:hidd
                     e.preventDefault();
                     sendMessage(input.value);
                 }
+            });
+            document.getElementById('dismiss-btn').addEventListener('click', function(e) {
+                e.preventDefault();
+                window.parent.postMessage({ type: 'effectgroep-dismiss-floating' }, '*');
             });
         })();
     <\/script>
