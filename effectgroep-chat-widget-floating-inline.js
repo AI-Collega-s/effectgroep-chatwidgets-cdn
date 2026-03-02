@@ -461,7 +461,7 @@
         .header-line {
             margin: 0.75rem 2rem 0;
             border: none;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: 1px solid #ffffff;
         }
 
         .message-window {
