@@ -89,8 +89,10 @@
                 entries.forEach(function(entry) {
                     if (entry.isIntersecting) {
                         self.hideFloatingBar();
-                    } else {
+                    } else if (entry.boundingClientRect.bottom < 0) {
                         self.showFloatingBar();
+                    } else {
+                        self.hideFloatingBar();
                     }
                 });
             }, { threshold: 0 });
@@ -148,8 +150,7 @@
                     document.body.style.overflow = '';
                     setTimeout(function() {
                         var rect = self.inlineContainer.getBoundingClientRect();
-                        var inViewport = rect.bottom > 0 && rect.top < window.innerHeight;
-                        if (!inViewport) {
+                        if (rect.bottom < 0) {
                             self.showFloatingBar();
                         }
                     }, 150);
