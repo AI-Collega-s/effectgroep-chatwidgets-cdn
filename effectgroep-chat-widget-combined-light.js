@@ -13,6 +13,7 @@
         },
         modalIsOpen: false,
         floatingVisible: false,
+        inlineHasBeenSeen: false,
         init: function(userConfig = {}) {
             if (userConfig.baseUrl) this.config.baseUrl = userConfig.baseUrl;
             if (userConfig.inboxToken) this.config.inboxToken = userConfig.inboxToken;
@@ -88,8 +89,9 @@
             this.observer = new IntersectionObserver(function(entries) {
                 entries.forEach(function(entry) {
                     if (entry.isIntersecting) {
+                        self.inlineHasBeenSeen = true;
                         self.hideFloatingBar();
-                    } else if (entry.boundingClientRect.bottom < 0) {
+                    } else if (self.inlineHasBeenSeen) {
                         self.showFloatingBar();
                     } else {
                         self.hideFloatingBar();
@@ -150,7 +152,8 @@
                     document.body.style.overflow = '';
                     setTimeout(function() {
                         var rect = self.inlineContainer.getBoundingClientRect();
-                        if (rect.bottom < 0) {
+                        var inViewport = rect.bottom > 0 && rect.top < window.innerHeight;
+                        if (self.inlineHasBeenSeen && !inViewport) {
                             self.showFloatingBar();
                         }
                     }, 150);
